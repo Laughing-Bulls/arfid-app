@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors, colorSchemes } from '../../theme/colors';
 
 const styles = StyleSheet.create({
   categoriesItemContainer: {
@@ -7,9 +8,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 215,
-    borderColor: '#cccccc',
+    borderColor: colorSchemes.recipeCard.border,
     borderWidth: 0.5,
     borderRadius: 20,
+    backgroundColor: colorSchemes.recipeCard.background,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.25,
+    elevation: 3
   },
   categoriesPhoto: {
     width: '100%',
@@ -17,26 +27,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    shadowColor: 'blue',
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowRadius: 5,
-    shadowOpacity: 1.0,
-    elevation: 3
   },
   categoriesName: {
     flex: 1,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#333333',
+    color: colorSchemes.recipeCard.title,
     marginTop: 8
   },
   categoriesInfo: {
     marginTop: 3,
-    marginBottom: 5
+    marginBottom: 5,
+    color: colors.secondary,
+    fontWeight: '600',
   }
 });
 

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../theme/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,15 +10,24 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 100,
-    borderColor: '#2cd18a',
+    borderColor: colors.secondary,
     borderWidth: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-    // backgroundColor: '#2cd18a'
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   text: {
     fontSize: 14,
-    color: '#2cd18a'
+    color: colors.secondary,
+    fontWeight: '600',
   }
 });
 

@@ -1,10 +1,11 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { colors, colorSchemes } from '../../theme/colors';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     flex: 1
   },
   carouselContainer: {
@@ -66,24 +67,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 5,
+    color: colors.textPrimary,
   },
   category: {
     fontSize: 14,
     fontWeight: 'bold',
     margin: 10,
-    color: '#2cd18a'
+    color: colors.secondary
   },
   infoDescriptionRecipe: {
     textAlign: 'left',
     fontSize: 16,
     marginTop: 30,
-    margin: 15
+    margin: 15,
+    color: colors.textSecondary,
   },
   infoRecipeName: {
     fontSize: 28,
     margin: 10,
     fontWeight: 'bold',
-    color: 'black',
+    color: colors.textPrimary,
     textAlign: 'center'
   }
 });

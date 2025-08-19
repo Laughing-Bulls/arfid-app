@@ -1,14 +1,16 @@
 import { StyleSheet } from 'react-native';
 import { RecipeCard } from '../../AppStyles';
+import { colors } from '../../theme/colors';
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
   },
   titleIngredient: {
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
+    color: colors.textPrimary,
   },
   photoIngredient: {
     width: '100%',
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   ingredientInfo: {
-    color: 'black',
+    color: colors.textPrimary,
     margin: 10,
     fontSize: 19,
     textAlign: 'left',

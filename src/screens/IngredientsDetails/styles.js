@@ -1,4 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { colors, colorSchemes } from '../../theme/colors';
+
 // screen sizing
 const { width, height } = Dimensions.get('window');
 // orientation must fixed
@@ -17,14 +19,26 @@ const styles = StyleSheet.create({
     margin: RECIPE_ITEM_OFFSET,
     marginTop: 30,
     width: (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
-    height: RECIPE_ITEM_HEIGHT + 60
+    height: RECIPE_ITEM_HEIGHT + 60,
+    backgroundColor: colorSchemes.recipeCard.background,
+    borderRadius: 15,
+    padding: 10,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   title: {
     margin: 10,
     marginBottom: 5,
-    color: 'black',
+    color: colorSchemes.recipeCard.title,
     fontSize: 13,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '600',
   },
   photo: {
     width: (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,

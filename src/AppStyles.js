@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { colors, colorSchemes } from './theme/colors';
 
 // screen sizing
 const { width, height } = Dimensions.get('window');
@@ -20,9 +21,18 @@ export const RecipeCard = StyleSheet.create({
     marginTop: 20,
     width: (SCREEN_WIDTH - (recipeNumColums + 1) * RECIPE_ITEM_MARGIN) / recipeNumColums,
     height: RECIPE_ITEM_HEIGHT + 75,
-    borderColor: '#cccccc',
+    borderColor: colorSchemes.recipeCard.border,
     borderWidth: 0.5,
-    borderRadius: 15
+    borderRadius: 15,
+    backgroundColor: colorSchemes.recipeCard.background,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   photo: {
     width: (SCREEN_WIDTH - (recipeNumColums + 1) * RECIPE_ITEM_MARGIN) / recipeNumColums,
@@ -36,13 +46,18 @@ export const RecipeCard = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#444444',
+    color: colorSchemes.recipeCard.title,
     marginTop: 3,
     marginRight: 5,
     marginLeft: 5,
   },
   category: {
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
+    color: colorSchemes.recipeCard.category,
+    fontWeight: '600',
   }
 });
+
+// Export colors for use in other components
+export { colors, colorSchemes };

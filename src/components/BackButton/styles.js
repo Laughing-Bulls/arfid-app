@@ -1,5 +1,6 @@
 // BackButton/styles.js
 import { StyleSheet } from "react-native";
+import { colors } from "../../theme/colors";
 
 const styles = StyleSheet.create({
   btnContainer: {
@@ -8,8 +9,8 @@ const styles = StyleSheet.create({
     borderRadius: 20, 
     padding: 10, 
     margin: 8, 
-    backgroundColor: "white",
-    shadowColor: "#000",
+    backgroundColor: colors.white,
+    shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -17,10 +18,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   btnIcon: {
     height: 20, 
     width: 20,
+    tintColor: colors.primary,
   },
 });
 

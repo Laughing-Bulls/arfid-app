@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../theme/colors';
 
 const styles = StyleSheet.create({
   btnClickContain: {
@@ -14,12 +15,15 @@ const styles = StyleSheet.create({
   },
   btnIcon: {
     height: 25,
-    width: 25
+    width: 25,
+    tintColor: colors.primary,
   },
   btnText: {
     fontSize: 16,
     marginLeft: 10,
-    marginTop: 2
+    marginTop: 2,
+    color: colors.textPrimary,
+    fontWeight: '500',
   }
 });
 
