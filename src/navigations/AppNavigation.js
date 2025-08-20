@@ -23,10 +23,18 @@ function MainNavigator() {
         headerTitleAlign: 'center',
       }}
     >
-      <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen 
+        name='Home' 
+        component={HomeScreen} 
+        options={{ title: 'Tastings' }}
+      />
       <Stack.Screen name='Categories' component={CategoriesScreen}/>
       <Stack.Screen name='Recipe' component={RecipeScreen}/>
-      <Stack.Screen name='RecipesList' component={RecipesListScreen} />
+      <Stack.Screen 
+        name='RecipesList' 
+        component={RecipesListScreen} 
+        options={{ title: 'Tastings' }}
+      />
       <Stack.Screen name='Ingredient' component={IngredientScreen} />
       <Stack.Screen name='Search' component={SearchScreen} />
       <Stack.Screen name='IngredientsDetails' component={IngredientsDetailsScreen} />

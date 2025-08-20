@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from "react";
-import { FlatList, Text, View, TouchableHighlight, Image } from "react-native";
+import { FlatList, Text, View, TouchableHighlight, Image, Button, Alert } from "react-native";
 import styles from "./styles";
 import { recipes } from "../../data/dataArrays";
 import MenuImage from "../../components/MenuImage/MenuImage";
@@ -17,7 +17,9 @@ export default function HomeScreen(props) {
           }}
         />
       ),
-      headerRight: () => <View />,
+      headerRight: () => (
+        <Button title="Add" onPress={() => Alert.alert('New Tasting', 'Coming soon')} />
+      ),
     });
   }, []);
 
