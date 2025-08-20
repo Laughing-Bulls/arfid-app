@@ -79,3 +79,4 @@ The Brave Bites theme reflects:
 - **Warmth** - Yellow represents the joy of cooking and sharing meals
 
 This color scheme creates an inviting and exciting atmosphere that encourages users to try new recipes and embrace culinary adventures.
+
