@@ -88,7 +88,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.textPrimary,
     textAlign: 'center'
-  }
+  },
+  // New styles for rating and photo sections
+  ratingSection: {
+    width: '100%',
+    marginVertical: 15,
+    paddingHorizontal: 10,
+  },
+  photoSection: {
+    width: '100%',
+    marginVertical: 15,
+    paddingHorizontal: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
 });
 
 export default styles;

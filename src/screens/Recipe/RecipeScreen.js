@@ -17,6 +17,8 @@ import {
 } from "../../data/MockDataAPI";
 import BackButton from "../../components/BackButton/BackButton";
 import ViewIngredientsButton from "../../components/ViewIngredientsButton/ViewIngredientsButton";
+import RatingStars from "../../components/RatingStars/RatingStars";
+import PhotoSelector from "../../components/PhotoSelector/PhotoSelector";
 
 const { width: viewportWidth } = Dimensions.get("window");
 
@@ -27,6 +29,10 @@ export default function RecipeScreen(props) {
   const title = getCategoryName(category.id);
   const slider1Ref = useRef(null)
   const progress = useSharedValue(0)
+
+  // State for rating and photo
+  const [rating, setRating] = useState(0);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -56,7 +62,6 @@ export default function RecipeScreen(props) {
     navigation.navigate("Ingredient", { ingredient, name });
   };
 
-
   const onPressPagination = (index) =>
     {
       slider1Ref.current?.scrollTo({
@@ -64,7 +69,18 @@ export default function RecipeScreen(props) {
         animated: true,
       })
     }
-  
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handlePhotoSelect = (photoUri) => {
+    setSelectedPhoto(photoUri);
+  };
+
+  const handlePhotoCapture = (photoUri) => {
+    setSelectedPhoto(photoUri);
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -103,6 +119,27 @@ export default function RecipeScreen(props) {
       </View>
       <View style={styles.infoRecipeContainer}>
         <Text style={styles.infoRecipeName}>{item.title}</Text>
+        
+        {/* Rating Section */}
+        <View style={styles.ratingSection}>
+          <Text style={styles.sectionTitle}>Rate this recipe</Text>
+          <RatingStars 
+            rating={rating} 
+            onRatingChange={handleRatingChange}
+            size={28}
+          />
+        </View>
+
+        {/* Photo Section */}
+        <View style={styles.photoSection}>
+          <Text style={styles.sectionTitle}>Add your photo</Text>
+          <PhotoSelector
+            selectedPhoto={selectedPhoto}
+            onPhotoSelect={handlePhotoSelect}
+            onPhotoCapture={handlePhotoCapture}
+          />
+        </View>
+
         <View style={styles.infoContainer}>
           <TouchableHighlight
             onPress={() =>
