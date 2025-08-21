@@ -2046,6 +2046,11 @@ available-typed-arrays@^1.0.7:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
+await-lock@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/await-lock/-/await-lock-2.2.2.tgz#a95a9b269bfd2f69d22b17a321686f551152bcef"
+  integrity sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==
+
 babel-core@^7.0.0-bridge.0:
   version "7.0.0-bridge.0"
   resolved "https://registry.npmjs.org/babel-core/-/babel-core-7.0.0-bridge.0.tgz"
@@ -3139,6 +3144,13 @@ expo-modules-core@1.12.26:
   integrity sha512-y8yDWjOi+rQRdO+HY+LnUlz8qzHerUaw/LUjKPU/mX8PRXP4UUPEEp5fjAwBU44xjNmYSHWZDwet4IBBE+yQUA==
   dependencies:
     invariant "^2.2.4"
+
+expo-sqlite@^15.2.14:
+  version "15.2.14"
+  resolved "https://registry.yarnpkg.com/expo-sqlite/-/expo-sqlite-15.2.14.tgz#53a63d1bab5e6ab3f5e515bf79d2070dd4fe08c4"
+  integrity sha512-6tWnEE0fcir30/e7eVwjeC7eKdncfVnIgo2JvnKpRndedyiFMXLMyOQWNVGnuhnSrPV2BHvGGjLByS/j5VgH4w==
+  dependencies:
+    await-lock "^2.2.2"
 
 expo-status-bar@1.12.1:
   version "1.12.1"
@@ -5527,6 +5539,11 @@ react-native-gesture-handler@2.16.1:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-is-edge-to-edge@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
+  integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
+
 react-native-reanimated-carousel@4.0.0-alpha.12:
   version "4.0.0-alpha.12"
   resolved "https://registry.npmjs.org/react-native-reanimated-carousel/-/react-native-reanimated-carousel-4.0.0-alpha.12.tgz"
@@ -5551,12 +5568,13 @@ react-native-safe-area-context@4.10.5:
   resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-4.10.5.tgz"
   integrity sha512-Wyb0Nqw2XJ6oZxW/cK8k5q7/UAhg/wbEG6UVf89rQqecDZTDA5ic//P9J6VvJRVZerzGmxWQpVuM7f+PRYUM4g==
 
-react-native-screens@3.31.1:
-  version "3.31.1"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.31.1.tgz#909a890f669e32b0fb1b1410278b71ad2f8238f6"
-  integrity sha512-8fRW362pfZ9y4rS8KY5P3DFScrmwo/vu1RrRMMx0PNHbeC9TLq0Kw1ubD83591yz64gLNHFLTVkTJmWeWCXKtQ==
+react-native-screens@^4.15.1:
+  version "4.15.1"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.15.1.tgz#435c60ff90a7e29ebdf9d045f64c1c0d823c2157"
+  integrity sha512-//PfNTKMhs18XtC7CwYcPObbW/Vs9doQP8F9R/MF2zzkU9HcJkpwvpvUZfvvjRiLpJfeKOg8Zg5S7bACeR0aeA==
   dependencies:
     react-freeze "^1.0.0"
+    react-native-is-edge-to-edge "^1.2.1"
     warn-once "^0.1.0"
 
 react-native@0.74.5:
