@@ -19,9 +19,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "plugins": [
-      "expo-sqlite"
-    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.scott.arfid"

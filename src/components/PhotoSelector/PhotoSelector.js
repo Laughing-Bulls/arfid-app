@@ -79,3 +79,4 @@ const PhotoSelector = ({ selectedPhoto, onPhotoSelect, onPhotoCapture }) => {
 };
 
 export default PhotoSelector;
+

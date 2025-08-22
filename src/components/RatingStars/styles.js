@@ -36,3 +36,4 @@ export default StyleSheet.create({
     fontWeight: '500',
   },
 });
+

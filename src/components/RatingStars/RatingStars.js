@@ -46,3 +46,4 @@ const RatingStars = ({ rating, onRatingChange, size = 24, showLabel = true }) =>
 };
 
 export default RatingStars;
+
