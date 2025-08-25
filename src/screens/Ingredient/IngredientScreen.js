@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from "react";
 import { FlatList, Text, View, Image, TouchableHighlight } from "react-native";
 import styles from "./styles";
 import { getIngredientUrl, getRecipesByIngredient, getCategoryName } from "../../data/MockDataAPI";
+import BackButton from "../../components/BackButton/BackButton";
 
 export default function IngredientScreen(props) {
   const { navigation, route } = props;
@@ -13,6 +14,13 @@ export default function IngredientScreen(props) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: route.params?.name,
+      headerLeft: () => (
+        <BackButton
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      ),
     });
   }, []);
 

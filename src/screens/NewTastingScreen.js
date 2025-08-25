@@ -64,7 +64,7 @@ export default function NewTastingScreen({ navigation }) {
       <TextInput value={brand} onChangeText={setBrand} placeholder="e.g., Trader Joe's" style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} />
 
       <Text>Category</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 6 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingVertical: 6 }}>
         {CATEGORY_OPTIONS.map(c => {
           const active = c === selectedCategory;
           return (
@@ -86,7 +86,7 @@ export default function NewTastingScreen({ navigation }) {
             </Pressable>
           );
         })}
-      </ScrollView>
+      </View>
 
       <Text>Rating</Text>
       <AirbnbRating defaultRating={rating} onFinishRating={setRating} size={24} showRating />

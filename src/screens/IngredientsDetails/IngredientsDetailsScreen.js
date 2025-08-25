@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from "react";
 import { FlatList, Text, View, Image, TouchableHighlight } from "react-native";
 import styles from "./styles";
 import { getIngredientName, getAllIngredients } from "../../data/MockDataAPI";
+import BackButton from "../../components/BackButton/BackButton";
 
 export default function IngredientsDetailsScreen(props) {
   const { navigation, route } = props;
@@ -15,6 +16,13 @@ export default function IngredientsDetailsScreen(props) {
       headerTitleStyle: {
         fontSize: 16,
       },
+      headerLeft: () => (
+        <BackButton
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      ),
     });
   }, []);
 

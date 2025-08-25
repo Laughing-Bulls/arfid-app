@@ -35,7 +35,7 @@ export default function HomeScreen(props) {
           <Text style={{ fontSize: 14, fontWeight: '600', color: '#666' }}>
             Streak: {streak} days
           </Text>
-          <Button title="Add" onPress={() => navigation.navigate('NewTasting')} />
+          <Button title="Add" onPress={() => navigation.navigate('AddTasting')} />
         </View>
       ),
     });
@@ -157,6 +157,7 @@ export default function HomeScreen(props) {
   };
 
   const onPressItem = (item) => {
+    console.log('Clicked item:', { id: item.id, title: item.title });
     navigation.navigate("Recipe", { item });
   };
 
@@ -231,7 +232,7 @@ export default function HomeScreen(props) {
       {/* Category Chips */}
       <View>
         <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#495057' }}>Categories:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {['All', ...CATEGORY_OPTIONS].map(c => {
             const value = c === 'All' ? '' : c;
             const active = value === category;
@@ -251,7 +252,7 @@ export default function HomeScreen(props) {
               </Pressable>
             );
           })}
-        </ScrollView>
+        </View>
       </View>
     </View>
   );

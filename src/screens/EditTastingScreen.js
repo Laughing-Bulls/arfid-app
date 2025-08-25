@@ -1,9 +1,10 @@
 // src/screens/EditTastingScreen.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Button, Image, ScrollView, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
 import { updateItem } from '../storage/tastings';
+import BackButton from '../components/BackButton/BackButton';
 
 export default function EditTastingScreen({ navigation, route }) {
   const { item } = route.params;
@@ -14,6 +15,18 @@ export default function EditTastingScreen({ navigation, route }) {
   const [rating, setRating] = useState(item.rating || 0);
   const [photoUri, setPhotoUri] = useState(item.photoUri || '');
   const [notes, setNotes] = useState(item.notes || '');
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <BackButton
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     (async () => {

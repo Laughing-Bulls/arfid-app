@@ -29,6 +29,7 @@ const { width: viewportWidth } = Dimensions.get("window");
 export default function RecipeScreen(props) {
   const { navigation, route } = props;
   const initialItem = route.params?.item;
+  console.log('RecipeScreen received item:', { id: initialItem?.id, title: initialItem?.title });
   const slider1Ref = useRef(null)
   const progress = useSharedValue(0)
 
@@ -43,12 +44,15 @@ export default function RecipeScreen(props) {
 
   // Load item data when screen gains focus (for tasting items only)
   useFocusEffect(useCallback(() => {
-    if (!isTastingItem || !item?.id) return;
+    const itemId = initialItem?.id;
+    if (!itemId || typeof itemId !== 'number') return;
     
     let mounted = true;
     (async () => {
       try {
-        const loadedItem = await getItem(item.id);
+        console.log('Loading item from database with id:', itemId);
+        const loadedItem = await getItem(itemId);
+        console.log('Loaded item from database:', { id: loadedItem?.id, title: loadedItem?.title });
         if (mounted && loadedItem) {
           setItem(loadedItem);
         }
@@ -57,7 +61,7 @@ export default function RecipeScreen(props) {
       }
     })();
     return () => { mounted = false; };
-  }, [item?.id, isTastingItem]));
+  }, [initialItem?.id]));
 
   const onLogTry = async () => {
     if (!isTastingItem) return;

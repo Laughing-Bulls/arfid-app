@@ -10,6 +10,7 @@ export const CATEGORY_OPTIONS = [
   'Sauces',
   'Sweets',
   'Beverages',
+  'Other',
 ];
 
 export function normalizeCategory(value) {
