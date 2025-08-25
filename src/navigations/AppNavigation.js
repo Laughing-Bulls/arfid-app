@@ -10,6 +10,9 @@ import DrawerContainer from '../screens/DrawerContainer/DrawerContainer';
 import IngredientScreen from '../screens/Ingredient/IngredientScreen';
 import SearchScreen from '../screens/Search/SearchScreen';
 import IngredientsDetailsScreen from '../screens/IngredientsDetails/IngredientsDetailsScreen';
+import NewTastingScreen from '../screens/NewTastingScreen';
+import EditTastingScreen from '../screens/EditTastingScreen';
+import TryHistoryScreen from '../screens/TryHistoryScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +41,9 @@ function MainNavigator() {
       <Stack.Screen name='Ingredient' component={IngredientScreen} />
       <Stack.Screen name='Search' component={SearchScreen} />
       <Stack.Screen name='IngredientsDetails' component={IngredientsDetailsScreen} />
+      <Stack.Screen name='NewTasting' component={NewTastingScreen} options={{ title: 'New Tasting' }} />
+      <Stack.Screen name='EditTasting' component={EditTastingScreen} options={{ title: 'Edit Tasting' }} />
+      <Stack.Screen name='TryHistory' component={TryHistoryScreen} options={{ title: 'All tries' }} />
     </Stack.Navigator>
   );
 }

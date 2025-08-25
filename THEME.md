@@ -81,3 +81,4 @@ The Brave Bites theme reflects:
 This color scheme creates an inviting and exciting atmosphere that encourages users to try new recipes and embrace culinary adventures.
 
 
+

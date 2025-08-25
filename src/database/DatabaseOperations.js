@@ -9,7 +9,7 @@ export const ItemOperations = {
     }
 
     try {
-      const { title, brand, category, rating, photoUri } = item;
+      const { title, brand, category, rating, photoUri, notes } = item;
       const now = new Date().toISOString();
       
       // Get current items
@@ -26,6 +26,7 @@ export const ItemOperations = {
         category,
         rating,
         photoUri,
+        notes,
         createdAt: now,
         updatedAt: now
       };

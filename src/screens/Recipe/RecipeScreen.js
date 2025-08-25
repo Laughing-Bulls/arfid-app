@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState, useCallback } from "react";
 import {
   ScrollView,
   Text,
@@ -6,7 +6,10 @@ import {
   Image,
   Dimensions,
   TouchableHighlight,
+  Button,
+  TouchableOpacity,
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import styles from "./styles";
 import { useSharedValue } from 'react-native-reanimated';
 import Carousel, { Pagination } from 'react-native-reanimated-carousel';
@@ -19,20 +22,58 @@ import BackButton from "../../components/BackButton/BackButton";
 import ViewIngredientsButton from "../../components/ViewIngredientsButton/ViewIngredientsButton";
 import RatingStars from "../../components/RatingStars/RatingStars";
 import PhotoSelector from "../../components/PhotoSelector/PhotoSelector";
+import { getItem, logTry, updateItem } from "../../storage/tastings";
 
 const { width: viewportWidth } = Dimensions.get("window");
 
 export default function RecipeScreen(props) {
   const { navigation, route } = props;
-  const item = route.params?.item;
-  const category = getCategoryById(item.categoryId);
-  const title = getCategoryName(category.id);
+  const initialItem = route.params?.item;
   const slider1Ref = useRef(null)
   const progress = useSharedValue(0)
 
+  // State for the item (will be loaded/reloaded from database)
+  const [item, setItem] = useState(initialItem);
   // State for rating and photo
   const [rating, setRating] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  // Check if this is a tasting item (has id) or old recipe format
+  const isTastingItem = item && typeof item.id === 'number';
+
+  // Load item data when screen gains focus (for tasting items only)
+  useFocusEffect(useCallback(() => {
+    if (!isTastingItem || !item?.id) return;
+    
+    let mounted = true;
+    (async () => {
+      try {
+        const loadedItem = await getItem(item.id);
+        if (mounted && loadedItem) {
+          setItem(loadedItem);
+        }
+      } catch (error) {
+        console.error('Error loading item:', error);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [item?.id, isTastingItem]));
+
+  const onLogTry = async () => {
+    if (!isTastingItem) return;
+    
+    try {
+      await logTry(item.id);
+      const updated = await getItem(item.id);
+      if (updated) {
+        // Force a new object reference to ensure React detects the change
+        const freshItem = { ...updated, tries: [...(updated.tries || [])] };
+        setItem(freshItem);
+      }
+    } catch (error) {
+      console.error('Error logging try:', error);
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,14 +85,23 @@ export default function RecipeScreen(props) {
           }}
         />
       ),
-      headerRight: () => <View />,
+      headerRight: () => (
+        isTastingItem ? (
+          <Button 
+            title="Edit" 
+            onPress={() => navigation.navigate('EditTasting', { item })} 
+          />
+        ) : (
+          <View />
+        )
+      ),
     });
-  }, []);
+  }, [isTastingItem, item]);
 
-  const renderImage = ({ item }) => (
+  const renderImage = ({ item: imageUri }) => (
     <TouchableHighlight>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: item }} />
+        <Image style={styles.image} source={{ uri: imageUri }} />
       </View>
     </TouchableHighlight>
   );
@@ -82,6 +132,23 @@ export default function RecipeScreen(props) {
     setSelectedPhoto(photoUri);
   };
 
+  // Prepare data for display based on item type
+  const displayData = isTastingItem ? {
+    title: item.title,
+    photos: item.photoUri ? [item.photoUri] : ['https://via.placeholder.com/300'],
+    category: item.category,
+    rating: item.rating || 0,
+    description: item.notes || 'No notes added yet.',
+    brand: item.brand
+  } : {
+    title: item.title,
+    photos: item.photosArray || [],
+    category: getCategoryName(item.categoryId),
+    rating: 0,
+    description: item.description,
+    time: item.time
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.carouselContainer}>
@@ -95,7 +162,7 @@ export default function RecipeScreen(props) {
             width={viewportWidth}
             height={viewportWidth}
             autoPlay={false}
-            data={item.photosArray}
+            data={displayData.photos}
             scrollAnimationDuration={1000}
             renderItem={renderImage}
             onProgressChange={progress}
@@ -110,7 +177,7 @@ export default function RecipeScreen(props) {
               />
             )}
             progress={progress}
-            data={item.photosArray}
+            data={displayData.photos}
             dotStyle={styles.paginationDot}
             containerStyle={styles.paginationContainer}
             onPress={onPressPagination}
@@ -118,59 +185,79 @@ export default function RecipeScreen(props) {
         </View>
       </View>
       <View style={styles.infoRecipeContainer}>
-        <Text style={styles.infoRecipeName}>{item.title}</Text>
+        <Text style={styles.infoRecipeName}>{displayData.title}</Text>
         
-        {/* Rating Section */}
-        <View style={styles.ratingSection}>
-          <Text style={styles.sectionTitle}>Rate this recipe</Text>
-          <RatingStars 
-            rating={rating} 
-            onRatingChange={handleRatingChange}
-            size={28}
-          />
-        </View>
+        {/* Brand Section (for tasting items) */}
+        {isTastingItem && displayData.brand && (
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoRecipe}>Brand: {displayData.brand}</Text>
+          </View>
+        )}
 
-        {/* Photo Section */}
-        <View style={styles.photoSection}>
-          <Text style={styles.sectionTitle}>Add your photo</Text>
-          <PhotoSelector
-            selectedPhoto={selectedPhoto}
-            onPhotoSelect={handlePhotoSelect}
-            onPhotoCapture={handlePhotoCapture}
-          />
-        </View>
-
-        <View style={styles.infoContainer}>
-          <TouchableHighlight
-            onPress={() =>
-              navigation.navigate("RecipesList", { category, title })
-            }
-          >
-            <Text style={styles.category}>
-              {getCategoryName(item.categoryId).toUpperCase()}
+        {/* Rating Display */}
+        {displayData.rating > 0 && (
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoRecipe}>
+              Rating: {'★'.repeat(Math.floor(displayData.rating))} {displayData.rating}/5
             </Text>
-          </TouchableHighlight>
+          </View>
+        )}
+
+        {/* Log Try Button and Stats (for tasting items only) */}
+        {isTastingItem && (
+          <View style={styles.infoContainer} key={`tries-${item.tries?.length || 0}`}>
+            <Button title="Log Try" onPress={onLogTry} />
+            
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 8 }}>
+              <Text style={styles.infoRecipe}>
+                Last tried: {item.tries?.length ? new Date(item.tries[item.tries.length - 1]).toLocaleDateString() : 'Never'}
+              </Text>
+              <Button 
+                title="All tries" 
+                onPress={() => navigation.navigate('TryHistory', { id: item.id })} 
+              />
+            </View>
+            
+            <Text style={styles.infoRecipe}>
+              Times tried: {item.tries?.length || 0}
+            </Text>
+          </View>
+        )}
+
+        {/* Category */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.category}>
+            {displayData.category.toUpperCase()}
+          </Text>
         </View>
 
-        <View style={styles.infoContainer}>
-          <Image
-            style={styles.infoPhoto}
-            source={require("../../../assets/icons/time.png")}
-          />
-          <Text style={styles.infoRecipe}>{item.time} minutes </Text>
-        </View>
+        {/* Time (for recipe items) */}
+        {!isTastingItem && displayData.time && (
+          <View style={styles.infoContainer}>
+            <Image
+              style={styles.infoPhoto}
+              source={require("../../../assets/icons/time.png")}
+            />
+            <Text style={styles.infoRecipe}>{displayData.time} minutes </Text>
+          </View>
+        )}
 
+        {/* Ingredients (for recipe items) */}
+        {!isTastingItem && item.ingredients && (
+          <View style={styles.infoContainer}>
+            <ViewIngredientsButton
+              onPress={() => {
+                let ingredients = item.ingredients;
+                let title = "Ingredients for " + item.title;
+                navigation.navigate("IngredientsDetails", { ingredients, title });
+              }}
+            />
+          </View>
+        )}
+
+        {/* Description/Notes */}
         <View style={styles.infoContainer}>
-          <ViewIngredientsButton
-            onPress={() => {
-              let ingredients = item.ingredients;
-              let title = "Ingredients for " + item.title;
-              navigation.navigate("IngredientsDetails", { ingredients, title });
-            }}
-          />
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.infoDescriptionRecipe}>{item.description}</Text>
+          <Text style={styles.infoDescriptionRecipe}>{displayData.description}</Text>
         </View>
       </View>
     </ScrollView>
