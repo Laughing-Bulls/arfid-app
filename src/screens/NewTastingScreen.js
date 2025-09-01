@@ -1,22 +1,22 @@
 // src/screens/NewTastingScreen.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, Button, Image, ScrollView, Alert, TouchableOpacity, Pressable } from 'react-native';
-import { useFocusEffect, useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
 import { addItemWithFirstTry } from '../storage/tastings';
 import { CATEGORY_OPTIONS } from '../constants/categories';
 import { resolvePhotoSource } from '../utils/photos';
 
-export default function NewTastingScreen({ navigation, route }) {
-  const routeHook = useRoute();
-  const navigationHook = useNavigation();
+export default function NewTastingScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
   
   const [title, setTitle] = useState('');
   const [brand, setBrand] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Other');
   const [rating, setRating] = useState(0);
-  const [photo, setPhoto] = useState(null);
+  const [photo, setPhoto] = useState(null);  // { kind: 'stock'|'uri', ... }
   const [notes, setNotes] = useState('');
   const [dateTried, setDateTried] = useState(new Date().toISOString().split('T')[0]); // Default to today
 
@@ -36,10 +36,24 @@ export default function NewTastingScreen({ navigation, route }) {
     }, [])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      const picked = route.params?.photo;
+      if (picked) {
+        setPhoto(picked);
+        navigation.setParams({ photo: undefined }); // clear after consuming
+      }
+    }, [route.params?.photo, navigation])
+  );
+
   // Monitor photo state changes
   useEffect(() => {
     console.log('NewTasting: Photo state changed to:', photo);
   }, [photo]);
+
+  const openStockPicker = () => {
+    navigation.navigate('StockPicker', { onSelect: (p) => setPhoto(p) });
+  };
 
   useEffect(() => {
     (async () => {
@@ -131,33 +145,20 @@ export default function NewTastingScreen({ navigation, route }) {
       />
 
       <Text>Photo</Text>
-      {photo && <Text style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>Debug: {JSON.stringify(photo)}</Text>}
-      {photo
-        ? <Image 
-            source={resolvePhotoSource(photo)} 
-            style={{ width: '100%', height: 220, borderRadius: 12 }} 
-          />
-        : <View style={{ width: '100%', height: 220, borderRadius: 12, backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }}><Text>No photo yet</Text></View>}
+      {photo ? (
+        <Image
+          source={resolvePhotoSource(photo)}
+          style={{ width: '100%', height: 220, borderRadius: 12 }}
+        />
+      ) : (
+        <View style={{ width: '100%', height: 220, borderRadius: 12, backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }}>
+          <Text>No photo yet</Text>
+        </View>
+      )}
       <View style={{ flexDirection: 'row', gap: 12 }}>
         <Button title="Choose Photo" onPress={choosePhoto} />
         <Button title="Take Photo" onPress={takePhoto} />
-        <Button 
-          title="Stock Photo" 
-          onPress={() => {
-            console.log('NewTasting: Opening StockPicker');
-            navigation.navigate('StockPicker', {
-                        onSelect: (p) => {
-            try {
-              console.log('NewTasting: Received photo from StockPicker:', p);
-              setPhoto(p);
-              console.log('NewTasting: Photo state updated successfully');
-            } catch (error) {
-              console.error('NewTasting: Error in onSelect callback:', error);
-            }
-          }
-            });
-          }}
-        />
+        <Button title="Stock Photo" onPress={openStockPicker} />
 
       </View>
 

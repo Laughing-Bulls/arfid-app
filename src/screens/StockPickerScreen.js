@@ -1,6 +1,29 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { View, Text, Pressable, Button, TextInput, FlatList, Image } from 'react-native';
 import { STOCK_PHOTOS } from '../constants/stockPhotos';
+import { CommonActions } from '@react-navigation/native';
+
+// helper: set params on a specific route by name without navigating
+function setParamsOnRoute(navigation, routeName, params) {
+  const parent = navigation.getParent?.();
+  if (!parent?.getState) return false;
+
+  const parentState = parent.getState();              // this is your Root stack
+  // Find the nested drawer (named "Root" in our earlier setup) then the AddTasting route key
+  const rootRoute = parentState.routes.find(r => r.name === 'Root'); // adjust if your root is named differently
+  const drawerState = rootRoute?.state;               // nested drawer state
+
+  const addRoute = drawerState?.routes?.find(r => r.name === routeName);
+  const addKey = addRoute?.key;
+
+  if (!addKey) return false;
+
+  parent.dispatch({
+    ...CommonActions.setParams({ photo: params.photo }),
+    source: addKey,                                   // set params on that exact route
+  });
+  return true;
+}
 
 export default function StockPickerScreen({ navigation, route }) {
   console.log('StockPicker: Screen loaded');
@@ -26,17 +49,18 @@ export default function StockPickerScreen({ navigation, route }) {
 
   const confirm = () => {
     if (!selectedPhoto) return;
-    console.log('StockPicker: Confirming selection:', selectedPhoto);
-    
-    if (typeof onSelectRef.current === 'function') {
-      console.log('StockPicker: Calling onSelect callback');
-      onSelectRef.current(selectedPhoto);
-      console.log('StockPicker: onSelect callback completed');
-    } else {
-      console.log('StockPicker: No onSelect callback available');
+
+    // 1) fire the callback if it exists (may be missing after hot reload)
+    const cb = route?.params?.onSelect;
+    if (typeof cb === 'function') {
+      // next frame to avoid racing unmount
+      requestAnimationFrame(() => cb(selectedPhoto));
     }
-    
-    console.log('StockPicker: About to go back');
+
+    // 2) also set params directly on the AddTasting route so it persists
+    setParamsOnRoute(navigation, 'AddTasting', { photo: selectedPhoto });
+
+    // 3) now pop back to the previous screen
     navigation.goBack();
   };
 
