@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { enableScreens } from 'react-native-screens';
-import AppContainer from './src/navigations/AppNavigation';
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from './src/navigations/RootNavigator';
 import databaseHelper from './src/database/DatabaseHelper';
 
 enableScreens(true);
@@ -20,6 +21,8 @@ export default function App() {
   }, []);
 
   return (
-     <AppContainer />
+    <NavigationContainer>
+      <RootNavigator />
+    </NavigationContainer>
   );
 }

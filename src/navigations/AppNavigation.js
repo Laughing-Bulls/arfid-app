@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/Home/HomeScreen';
 import RecipeScreen from '../screens/Recipe/RecipeScreen';
@@ -18,9 +17,9 @@ const Drawer = createDrawerNavigator();
 
 function AppDrawer() {
   return (
-    <Drawer.Navigator initialRouteName="Tastings">
+    <Drawer.Navigator initialRouteName="Tastings" screenOptions={{ unmountOnBlur: false }}>
       <Drawer.Screen name="Tastings" component={HomeScreen} options={{ title: 'Tastings' }} />
-      <Drawer.Screen name="AddTasting" component={NewTastingScreen} options={{ title: 'Add Tasting' }} />
+      <Drawer.Screen name="AddTasting" component={NewTastingScreen} options={{ title: 'Add Tasting', unmountOnBlur: false }} />
       <Drawer.Screen name="Search" component={SearchScreen} options={{ title: 'Search' }} />
       <Drawer.Screen name="Stats" component={StatsScreen} options={{ title: 'Stats' }} />
       <Drawer.Screen name="Friends" component={FriendsScreen} options={{ title: 'Friends' }} />
@@ -30,19 +29,13 @@ function AppDrawer() {
       <Drawer.Screen name="RecipesList" component={RecipesListScreen} options={{ drawerItemStyle: { display: 'none' }, title: 'Tastings' }} />
       <Drawer.Screen name="Ingredient" component={IngredientScreen} options={{ drawerItemStyle: { display: 'none' } }} />
       <Drawer.Screen name="IngredientsDetails" component={IngredientsDetailsScreen} options={{ drawerItemStyle: { display: 'none' } }} />
-      <Drawer.Screen name="NewTasting" component={NewTastingScreen} options={{ drawerItemStyle: { display: 'none' }, title: 'New Tasting' }} />
       <Drawer.Screen name="EditTasting" component={EditTastingScreen} options={{ drawerItemStyle: { display: 'none' }, title: 'Edit Tasting' }} />
       <Drawer.Screen name="TryHistory" component={TryHistoryScreen} options={{ drawerItemStyle: { display: 'none' }, title: 'All tries' }} />
+
     </Drawer.Navigator>
   );
 }
 
-export default function AppContainer() {
-  return (
-    <NavigationContainer>
-      <AppDrawer/>
-    </NavigationContainer>
-  );
-}
+export default AppDrawer;
 
 console.disableYellowBox = true;

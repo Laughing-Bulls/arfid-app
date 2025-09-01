@@ -1,0 +1,19 @@
+=== BraveBites Backup Summary ===
+Timestamp: 20250831_214448
+Backup Name: BraveBites_backup_20250831_214448
+
+=== Files Backed Up ===
+• Project source code: ./backups/project_20250831_214448
+• AsyncStorage data: ./backups/async_storage_20250831_214448
+• Data backup: ./backups/data_backup_20250831_214448.json
+
+=== Development Environment ===
+• Node.js version: v18.20.8
+• npm version: 10.8.2
+• Expo CLI version: 0.18.31
+
+=== System Info ===
+• macOS version: 15.6.1
+• Available disk space: 349Gi
+
+Backup completed successfully!
