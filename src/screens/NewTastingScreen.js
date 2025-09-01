@@ -1,66 +1,34 @@
 // src/screens/NewTastingScreen.js
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TextInput, Button, Image, ScrollView, Alert, TouchableOpacity, Pressable } from 'react-native';
-import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
 import { addItemWithFirstTry } from '../storage/tastings';
 import { CATEGORY_OPTIONS } from '../constants/categories';
 import { resolvePhotoSource } from '../utils/photos';
+import useDraftTasting from '../state/useDraftTasting';
 
 export default function NewTastingScreen() {
   const navigation = useNavigation();
-  const route = useRoute();
   
-  const [title, setTitle] = useState('');
-  const [brand, setBrand] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Other');
-  const [rating, setRating] = useState(0);
-  const [photo, setPhoto] = useState(null);  // { kind: 'stock'|'uri', ... }
-  const [notes, setNotes] = useState('');
-  const [dateTried, setDateTried] = useState(new Date().toISOString().split('T')[0]); // Default to today
+  // Use Zustand store instead of local state
+  const {
+    title, brand, selectedCategory, rating, photo, notes, dateTried,
+    setField, setPhoto, reset
+  } = useDraftTasting();
 
-
-
-  // Reset form when screen gains focus
-  useFocusEffect(
-    useCallback(() => {
-      // Reset all form fields to initial state
-      setTitle('');
-      setBrand('');
-      setSelectedCategory('Other');
-      setRating(0);
-      setPhoto(null);
-      setNotes('');
-      setDateTried(new Date().toISOString().split('T')[0]);
-    }, [])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      const picked = route.params?.photo;
-      if (picked) {
-        setPhoto(picked);
-        navigation.setParams({ photo: undefined }); // clear after consuming
-      }
-    }, [route.params?.photo, navigation])
-  );
-
-  // Monitor photo state changes
-  useEffect(() => {
-    console.log('NewTasting: Photo state changed to:', photo);
-  }, [photo]);
-
-  const openStockPicker = () => {
-    navigation.navigate('StockPicker', { onSelect: (p) => setPhoto(p) });
-  };
-
+  // Request permissions on mount
   useEffect(() => {
     (async () => {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
       await ImagePicker.requestCameraPermissionsAsync();
     })();
   }, []);
+
+  const openStockPicker = () => {
+    navigation.navigate('StockPicker');
+  };
 
   const choosePhoto = async () => {
     const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
@@ -91,6 +59,7 @@ export default function NewTastingScreen() {
         }, 
         triedDate
       );
+      reset(); // Clear the draft after successful save
       navigation.goBack();
     } catch (error) {
       console.error('Save failed:', error);
@@ -103,10 +72,20 @@ export default function NewTastingScreen() {
       <Text style={{ fontSize: 18, fontWeight: '600' }}>New Tasting</Text>
 
       <Text>Title</Text>
-      <TextInput value={title} onChangeText={setTitle} placeholder="e.g., Honeycrisp apple" style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} />
+      <TextInput 
+        value={title} 
+        onChangeText={(text) => setField('title', text)} 
+        placeholder="e.g., Honeycrisp apple" 
+        style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} 
+      />
 
       <Text>Brand</Text>
-      <TextInput value={brand} onChangeText={setBrand} placeholder="e.g., Trader Joe's" style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} />
+      <TextInput 
+        value={brand} 
+        onChangeText={(text) => setField('brand', text)} 
+        placeholder="e.g., Trader Joe's" 
+        style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} 
+      />
 
       <Text>Category</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingVertical: 6 }}>
@@ -115,7 +94,7 @@ export default function NewTastingScreen() {
           return (
             <Pressable
               key={c}
-              onPress={() => setSelectedCategory(c)}
+              onPress={() => setField('selectedCategory', c)}
               accessibilityRole="button"
               accessibilityState={{ selected: active }}
               style={{
@@ -134,12 +113,17 @@ export default function NewTastingScreen() {
       </View>
 
       <Text>Rating</Text>
-      <AirbnbRating defaultRating={rating} onFinishRating={setRating} size={24} showRating />
+      <AirbnbRating 
+        defaultRating={rating} 
+        onFinishRating={(value) => setField('rating', value)} 
+        size={24} 
+        showRating 
+      />
 
       <Text>Date Tried</Text>
       <TextInput 
         value={dateTried} 
-        onChangeText={setDateTried} 
+        onChangeText={(text) => setField('dateTried', text)} 
         placeholder="YYYY-MM-DD" 
         style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }} 
       />
@@ -159,13 +143,12 @@ export default function NewTastingScreen() {
         <Button title="Choose Photo" onPress={choosePhoto} />
         <Button title="Take Photo" onPress={takePhoto} />
         <Button title="Stock Photo" onPress={openStockPicker} />
-
       </View>
 
       <Text>Notes</Text>
       <TextInput
         value={notes}
-        onChangeText={setNotes}
+        onChangeText={(text) => setField('notes', text)}
         placeholder="Flavor, texture, where you got it..."
         multiline
         style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10, minHeight: 80 }}

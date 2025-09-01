@@ -1,39 +1,16 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, Pressable, Button, TextInput, FlatList, Image } from 'react-native';
 import { STOCK_PHOTOS } from '../constants/stockPhotos';
-import { CommonActions } from '@react-navigation/native';
+import useDraftTasting from '../state/useDraftTasting';
 
-// helper: set params on a specific route by name without navigating
-function setParamsOnRoute(navigation, routeName, params) {
-  const parent = navigation.getParent?.();
-  if (!parent?.getState) return false;
-
-  const parentState = parent.getState();              // this is your Root stack
-  // Find the nested drawer (named "Root" in our earlier setup) then the AddTasting route key
-  const rootRoute = parentState.routes.find(r => r.name === 'Root'); // adjust if your root is named differently
-  const drawerState = rootRoute?.state;               // nested drawer state
-
-  const addRoute = drawerState?.routes?.find(r => r.name === routeName);
-  const addKey = addRoute?.key;
-
-  if (!addKey) return false;
-
-  parent.dispatch({
-    ...CommonActions.setParams({ photo: params.photo }),
-    source: addKey,                                   // set params on that exact route
-  });
-  return true;
-}
-
-export default function StockPickerScreen({ navigation, route }) {
+export default function StockPickerScreen({ navigation }) {
   console.log('StockPicker: Screen loaded');
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('All');
 
-  // Guard against hot reload losing the function
-  const onSelectRef = useRef(route?.params?.onSelect);
-  useEffect(() => { onSelectRef.current = route?.params?.onSelect; }, [route?.params?.onSelect]);
+  // Use Zustand store to set the photo
+  const setPhoto = useDraftTasting((state) => state.setPhoto);
 
   const cats = useMemo(() => ['All', ...Array.from(new Set(STOCK_PHOTOS.map(p => p.category)))], []);
   const data = useMemo(() => {
@@ -44,23 +21,16 @@ export default function StockPickerScreen({ navigation, route }) {
 
   const pick = (id) => {
     const photo = { kind: 'stock', id };
-    setSelectedPhoto(photo);    // do not navigate here
+    setSelectedPhoto(photo);
   };
 
   const confirm = () => {
     if (!selectedPhoto) return;
 
-    // 1) fire the callback if it exists (may be missing after hot reload)
-    const cb = route?.params?.onSelect;
-    if (typeof cb === 'function') {
-      // next frame to avoid racing unmount
-      requestAnimationFrame(() => cb(selectedPhoto));
-    }
-
-    // 2) also set params directly on the AddTasting route so it persists
-    setParamsOnRoute(navigation, 'AddTasting', { photo: selectedPhoto });
-
-    // 3) now pop back to the previous screen
+    // Update the draft in the store
+    setPhoto(selectedPhoto);
+    
+    // Navigate back to the form
     navigation.goBack();
   };
 
